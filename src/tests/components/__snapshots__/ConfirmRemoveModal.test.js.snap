@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render ConfirmRemoveModal correctly (not open) 1`] = `
+<Modal
+  ariaHideApp={true}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal"
+  closeTimeoutMS={200}
+  contentLabel="Are you sure?"
+  isOpen={false}
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+>
+  <h3
+    className="modal__title"
+  >
+    Are you sure?
+  </h3>
+  <p
+    className="modal__body"
+  >
+    Please confirm you want to delete this expense.
+  </p>
+  <div
+    className="modal__buttons"
+  >
+    <button
+      className="button"
+      id="btnRemoveConfirm"
+      onClick={[Function]}
+    >
+       Confirm 
+    </button>
+    <button
+      className="button button--secondary"
+      id="btnRemoveCancel"
+      onClick={[Function]}
+    >
+       Cancel 
+    </button>
+  </div>
+</Modal>
+`;
+
+exports[`should render ConfirmRemoveModal correctly 1`] = `
+<Modal
+  ariaHideApp={true}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal"
+  closeTimeoutMS={200}
+  contentLabel="Are you sure?"
+  isOpen={true}
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+>
+  <h3
+    className="modal__title"
+  >
+    Are you sure?
+  </h3>
+  <p
+    className="modal__body"
+  >
+    Please confirm you want to delete this expense.
+  </p>
+  <div
+    className="modal__buttons"
+  >
+    <button
+      className="button"
+      id="btnRemoveConfirm"
+      onClick={[Function]}
+    >
+       Confirm 
+    </button>
+    <button
+      className="button button--secondary"
+      id="btnRemoveCancel"
+      onClick={[Function]}
+    >
+       Cancel 
+    </button>
+  </div>
+</Modal>
+`;
