@@ -13,7 +13,7 @@ exports[`should render LoginPage correctly 1`] = `
       Expensify
     </h1>
     <p>
-      It's time to get your expenses under control!
+      It's time to get your todos under control!
     </p>
     <button
       className="button"
