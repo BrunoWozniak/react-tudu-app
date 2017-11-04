@@ -1,4 +1,7 @@
-import { firebase, googleAuthProvider } from '../firebase/firebase';
+import { firebase } from '../firebase/firebase';
+import axios from 'axios';
+
+import { store } from '../app';
 
 export const login = (uid, email) => ({
 	type: 'LOGIN',
@@ -6,9 +9,23 @@ export const login = (uid, email) => ({
 	email
 });
 
-export const startLogin = () => {
+export const startLogin = ({ email, password }) => {
 	return () => {
-		return firebase.auth().signInWithPopup(googleAuthProvider);
+		axios.post(
+			'http://localhost:3000/users/login', 
+			{ email, password }
+		).then((res) => {
+			console.log(JSON.stringify(res.data));
+			console.log(res.status);
+			console.log(res.statusText);
+			console.log(JSON.stringify(res.headers));
+			console.log(axios.defaults.headers);
+			
+			store.dispatch(login(res.data._id, res.data.email));
+			// if (history.location.pathname === '/') {
+			// 	history.push('/dashboard');
+			// }
+		});
 	};
 };
 

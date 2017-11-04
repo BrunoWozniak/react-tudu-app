@@ -32,19 +32,20 @@ const renderApp = () => {
 
 ReactDOM.render(<LoadingPage />, document.getElementById('app'));
 
-firebase.auth().onAuthStateChanged((user) => {
-	if (user) {
-		store.dispatch(login(user.uid, user.email));
-		store.dispatch(startSetTodos()).then(() => {
-			renderApp();
-			if (history.location.pathname === '/') {
-				history.push('/dashboard');
-			}
-		});
-	} else {
-		store.dispatch(logout());
-		renderApp();
-		history.push('/');
-	}
-});
+// firebase.auth().onAuthStateChanged((user) => {
+// 	if (user) {
+// 		store.dispatch(login(user.uid, user.email));
+// 		store.dispatch(startSetTodos()).then(() => {
+// 			renderApp();
+// 			if (history.location.pathname === '/') {
+// 				history.push('/dashboard');
+// 			}
+// 		});
+// 	} else {
+// 		store.dispatch(logout());
+renderApp();
+history.push('/');
+// 	}
+// });
 
+export { store };

@@ -21,6 +21,12 @@
     line-height: 1;
 }
 
+.box-layout__error {
+    text-align:center;
+    color: red;
+    font-style: italic;
+}
+
 .box-layout__button-box {
     display: flex;
     justify-content: space-around;
