@@ -1,79 +1,79 @@
-import { firebase } from '../firebase/firebase';
 import axios from 'axios';
+import { browserHistory } from 'react-router';
 
-import { store } from '../app';
+export const auth = (uid) => ({
+	type: 'AUTH',
+	uid
+});
 
-export const signup = (uid, email, error) => ({
-	type: 'SIGNUP',
-	uid,
-	email,
-	error,
+export const deAuth = () => ({
+	type: 'DE_AUTH'
+});
+
+export const authError = (error) => ({
+	  type: 'AUTH_ERROR',
+	  error
 });
 
 export const startSignup = ({ email, password }) => {
-	return async () => {
+	return async (dispatch) => {
 		try {
 			const res = await axios.post(
 				'http://localhost:3000/users', 
 				{ email, password }
 			);
-			console.log(JSON.stringify(res.data));
-			console.log(res.status);
-			console.log(res.statusText);
-			console.log(JSON.stringify(res.headers));
-			console.log(axios.defaults.headers);
-			
-			store.dispatch(signup(res.data._id, res.data.email, false));
+			localStorage.setItem('token', res.headers.x-auth);
+			dispatch(auth(res.data._id));
+			browserHistory.push('/dashboard');
 		} catch (err) {
-			store.dispatch(signup(null, null, true));
+			dispatch(authError(err));
 		}
 	};
 };
 
-export const login = (uid, email, error) => ({
-	type: 'LOGIN',
-	uid,
-	email,
-	error
-});
-
-export const startLogin = ({ email, password }) => {
-	return async () => {
+export const startSignin = ({ email, password }) => {
+	return async (dispatch) => {
 		try {
 			const res = await axios.post(
 				'http://localhost:3000/users/login', 
 				{ email, password }
 			);
-			console.log(JSON.stringify(res.data));
-			console.log(res.status);
-			console.log(res.statusText);
-			console.log(JSON.stringify(res.headers));
-			console.log(axios.defaults.headers);
-			
-			store.dispatch(login(res.data._id, res.data.email, false));
+			localStorage.setItem('token', res.headers.x-auth);			
+			dispatch(auth(res.data._id));
+			browserHistory.push('/dashboard');
 		} catch (err) {
-			store.dispatch(login(null, null, true));
+			dispatch(authError(err));
 		}
 	};
 };
 
-export const logout = () => ({
-	type: 'LOGOUT'
-});
+export const startSignout = () => {
+	return async (dispatch) => {
+		try {
+			const token = localStorage.getItem('token');
+			localStorage.removeItem('token');
+			dispatch(deAuth());
+			await axios.delete(
+				'http://localhost:3000/users/me/token',
+				{ headers: { 'x-auth': token }}
+			);
+		} catch(err) {
 
-export const startLogout = () => {
-	axios.delete(
-		'http://localhost:3000/users/me/token'
-	).then((res) => {
-		console.log(JSON.stringify(res.data));
-		console.log(res.status);
-		console.log(res.statusText);
-		console.log(JSON.stringify(res.headers));
-		console.log(axios.defaults.headers);
-		
-		store.dispatch(logout());
-		// if (history.location.pathname === '/') {
-		// 	history.push('/dashboard');
-		// }
-	});
+		}
+	};
+};
+
+export const fetchUser = () => {
+	return async (dispatch) => {
+		try {
+			token = localStorage.getItem('token');
+			const res = await axios.get(
+				'http://localhost:3000/users/me', 
+				{ headers: { 'x-auth': token }}
+			);			
+			dispatch(auth(res.data._id));
+		} catch (err) {
+			dispatch(authError(err));
+		}
+	};
 };

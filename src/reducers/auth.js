@@ -1,19 +1,23 @@
 export default (state = {}, action) => {
 	switch(action.type) {
-	case 'SIGNUP':
+	case 'AUTH':
 		return {
+			...state,
 			uid: action.uid,
-			email: action.email,
-			signupError: action.error
+			authenticated: true,
+			authError: ''
 		};
-	case 'LOGIN':
+	case 'DE_AUTH':
 		return {
-			uid: action.uid,
-			email: action.email,
-			loginError: action.error
+			...state,
+			authenticated: false
 		};
-	case 'LOGOUT':
-		return {};
+	case 'AUTH_ERROR':
+		return {
+			...state,
+			authenticated: false,
+			authError: action.error
+		};
 	default:
 		return state;
 	}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { startLogin, startSignup } from '../actions/auth';
+import { startSignin, startSignup } from '../actions/auth';
 
 class LoginPage extends React.Component {
 	constructor(props) {
@@ -8,7 +8,7 @@ class LoginPage extends React.Component {
 		this.state = {
 			email: '',
 			password: '',
-			error: ''
+			formError: ''
 		};
 	}
 
@@ -22,46 +22,38 @@ class LoginPage extends React.Component {
         this.setState(() => ({ password }));
 	}
 	
-	onSubmitLogin = () => {
+	onSubmitSignin = () => {
 		if (!this.state.email || !this.state.password) {
-            this.setState(() => ({ error: 'Please provide email and password' }));
+			console.log('Signin Error');
+            this.setState(() => ({ formError: 'Please provide email and password' }));
         } else {
-			this.setState(() => ({ error: '' }));
-			const loginInfo = {
+			console.log('Ready to signin');
+			this.setState(() => ({ formError: '' }));
+			this.props.startSignin({
                 email: this.state.email,
                 password: this.state.password
-			};
-            
-			this.props.startLogin(loginInfo);
+			});
 		}
 	}
 
 	onSubmitSignup = () => {
 		if (!this.state.email || !this.state.password) {
-            this.setState(() => ({ error: 'Please provide email and password' }));
+            this.setState(() => ({ formError: 'Please provide email and password' }));
         } else {
-			this.setState(() => ({ error: '' }));
-			const signupInfo = {
+			this.setState(() => ({ formError: '' }));
+			this.props.startSignup({
                 email: this.state.email,
                 password: this.state.password
-			};
-            
-			this.props.startSignup(signupInfo);
+			});
 		}
 	}
 
 	errorMessage = () => (
-		!!this.state.error
-			? this.state.error
-			: this.props.loginError
-				? `We cannot sign you in
-					Please verify your credentials
-					Or sign up if you haven't an acount`
-				: this.props.signupError
-					? `We cannot sign you up
-						The email you supplied may already be used
-						Or there was a problem`
-					: ''
+		!!this.state.formError
+			? this.state.formError
+			: this.props.authError
+				? this.props.authError
+				: ''
 	)
 	
 	render() {
@@ -93,7 +85,8 @@ class LoginPage extends React.Component {
 								className="text-input"
 								placeholder="password"
 								style={{width: '100%'}}	
-								onChange={this.onPasswordChange}				/>
+								onChange={this.onPasswordChange}
+							/>
 						</div>
 						<div>
 							<p className="box-layout__error">{this.errorMessage()}</p>
@@ -107,7 +100,7 @@ class LoginPage extends React.Component {
 						<button
 							className="button"
 							type="submit"
-							onClick={this.onSubmitLogin}
+							onClick={this.onSubmitSignin}
 						>
 							Sign in
 						</button>
@@ -120,13 +113,12 @@ class LoginPage extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-	startLogin: (loginInfo) => dispatch(startLogin(loginInfo)),
+	startSignin: (signinInfo) => dispatch(startSignin(signinInfo)),
 	startSignup: (signupInfo) => dispatch(startSignup(signupInfo))
 });
 
 const mapStateToProps = (state) => ({
-	loginError: state.auth.loginError,
-	signupError: state.auth.signupError
+	errorMessage: state.auth.authError,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
