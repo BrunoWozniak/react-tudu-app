@@ -17,14 +17,12 @@ export const TodoSummary = ({ numberOfTodos, totalNumberOfTodos }) => {
 				</div>
 			</div>
 		</div>
-	)
+	);
 };
 
-const mapStateToProps = (state) => {
-	return {
-		numberOfTodos: selectTodos(state.todos, state.filters).length,
-		totalNumberOfTodos: state.todos.length
-	};
-};
+const mapStateToProps = state => ({
+	numberOfTodos: selectTodos(state.todos, state.filters).length,
+	totalNumberOfTodos: state.todos.length
+});
 
 export default connect(mapStateToProps)(TodoSummary);

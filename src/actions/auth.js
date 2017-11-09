@@ -11,69 +11,50 @@ export const deAuth = () => ({
 });
 
 export const authError = (error) => ({
-	  type: 'AUTH_ERROR',
-	  error
+	type: 'AUTH_ERROR',
+	error
 });
 
 export const startSignup = ({ email, password }) => {
-	return async (dispatch) => {
-		try {
-			const res = await axios.post(
-				'http://localhost:3000/users', 
-				{ email, password }
-			);
-			localStorage.setItem('token', res.headers.x-auth);
+	return (dispatch) => {
+		axios.post(
+			'http://localhost:3000/users', 
+			{ email, password }
+		).then(res => {
 			dispatch(auth(res.data._id));
-			browserHistory.push('/dashboard');
-		} catch (err) {
-			dispatch(authError(err));
-		}
+			localStorage.setItem('token', res.headers['x-auth']);
+		}).catch(() => {
+			dispatch(authError(`Sorry we can't sign you up`));
+		});
 	};
 };
 
 export const startSignin = ({ email, password }) => {
-	return async (dispatch) => {
-		try {
-			const res = await axios.post(
-				'http://localhost:3000/users/login', 
-				{ email, password }
-			);
-			localStorage.setItem('token', res.headers.x-auth);			
+	return (dispatch) => {
+		axios.post(
+			'http://localhost:3000/users/login', 
+			{ email, password }
+		).then(res => {
 			dispatch(auth(res.data._id));
-			browserHistory.push('/dashboard');
-		} catch (err) {
-			dispatch(authError(err));
-		}
+			localStorage.setItem('token', res.headers['x-auth']);
+		}).catch (() => {
+			dispatch(authError(`Sorry we can't sign you in`));
+		});
 	};
 };
 
 export const startSignout = () => {
-	return async (dispatch) => {
-		try {
-			const token = localStorage.getItem('token');
+	return (dispatch) => {
+		const token = localStorage.getItem('token');
+		axios.delete(
+			'http://localhost:3000/users/me/token',
+			{ headers: { 'x-auth': token }}
+		).then(() => {
 			localStorage.removeItem('token');
 			dispatch(deAuth());
-			await axios.delete(
-				'http://localhost:3000/users/me/token',
-				{ headers: { 'x-auth': token }}
-			);
-		} catch(err) {
-
-		}
-	};
-};
-
-export const fetchUser = () => {
-	return async (dispatch) => {
-		try {
-			token = localStorage.getItem('token');
-			const res = await axios.get(
-				'http://localhost:3000/users/me', 
-				{ headers: { 'x-auth': token }}
-			);			
-			dispatch(auth(res.data._id));
-		} catch (err) {
-			dispatch(authError(err));
-		}
+		}).catch(() => {
+			localStorage.removeItem('token');
+			dispatch(deAuth());
+		});
 	};
 };

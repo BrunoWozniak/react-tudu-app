@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import 'react-dates/initialize';
 import { DateRangePicker } from 'react-dates';
-import { setTextFilter, sortByDate, sortByAmount, setStartDateFilter, setEndDateFilter } from '../actions/filters';
+import { setTextFilter, sortByDescendingDate, sortByAscendingDate, setStartDateFilter, setEndDateFilter } from '../actions/filters';
 
 export class TodoListFilters extends React.Component {
   state = {
@@ -23,10 +23,10 @@ export class TodoListFilters extends React.Component {
   }
   
   onSortChange = (e) => {
-    if (e.target.value === 'date') {
-      this.props.sortByDate();
-    } else if (e.target.value === 'amount') {
-      this.props.sortByAmount();
+    if (e.target.value === 'descending') {
+      this.props.sortByDescendingDate();
+    } else if (e.target.value === 'ascending') {
+      this.props.sortByAscendingDate();
     }
   }
 
@@ -45,7 +45,7 @@ export class TodoListFilters extends React.Component {
               type="text"
               className="text-input"
               placeholder="Search todos"
-              value={this.props.filters.text}
+              value={this.props.filters.searchText}
               onChange={this.onTextChange}
             />
           </div>
@@ -55,8 +55,8 @@ export class TodoListFilters extends React.Component {
               value={this.props.filters.sortBy}
               onChange={this.onSortChange}
             >
-              <option value="date">Date</option>
-              <option value="amount">Amount</option>
+              <option value="ddescending">Descending</option>
+              <option value="ascending">Ascending</option>
             </select>
           </div>
           <div className="input-group__item">
@@ -90,9 +90,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setTextFilter: (text) => dispatch(setTextFilter(text)),
-  sortByDate: () => dispatch(sortByDate()),
-  sortByAmount: () => dispatch(sortByAmount()),
+  setTextFilter: (searchText) => dispatch(setTextFilter(searchText)),
+  sortByDescendingDate: () => dispatch(sortByDescendingDate()),
+  sortByAscendingDate: () => dispatch(sortByAscendingDate()),
   setStartDate: (startDate) => dispatch(setStartDateFilter(startDate)),
   setEndDate: (endDate) => dispatch(setEndDateFilter(endDate))
 });

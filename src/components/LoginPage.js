@@ -24,10 +24,8 @@ class LoginPage extends React.Component {
 	
 	onSubmitSignin = () => {
 		if (!this.state.email || !this.state.password) {
-			console.log('Signin Error');
             this.setState(() => ({ formError: 'Please provide email and password' }));
         } else {
-			console.log('Ready to signin');
 			this.setState(() => ({ formError: '' }));
 			this.props.startSignin({
                 email: this.state.email,
@@ -36,7 +34,8 @@ class LoginPage extends React.Component {
 		}
 	}
 
-	onSubmitSignup = () => {
+	onSubmitSignup = (e) => {
+		e.preventDefault();
 		if (!this.state.email || !this.state.password) {
             this.setState(() => ({ formError: 'Please provide email and password' }));
         } else {
@@ -94,12 +93,14 @@ class LoginPage extends React.Component {
 					</div>
 
 					<div className="box-layout__button-box">
-						<button className="button" onClick={this.onSubmitSignup}>
+						<button
+							className="button"
+							onClick={this.onSubmitSignup}
+						>
 							Sign up
 						</button>
 						<button
 							className="button"
-							type="submit"
 							onClick={this.onSubmitSignin}
 						>
 							Sign in
@@ -118,7 +119,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-	errorMessage: state.auth.authError,
+		authError: state.auth.authError,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

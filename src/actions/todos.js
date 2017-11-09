@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import database from '../firebase/firebase';
+import axios from 'axios';
 
 // ADD_TODO
 export const addTodo = (todo) => ({
@@ -8,20 +8,22 @@ export const addTodo = (todo) => ({
 });
 
 export const startAddTodo = (todoData = {}) => {
-	return (dispatch, getState) => {
+	return (dispatch) => {
 		const {
-			note = '',
-			description = '',
-			amount = 0,
-			createdAt = 0
+			text = '',
+			dueAt = 0
 		} = todoData;
-		const todo = {description, note, amount, createdAt};
-		const uid = getState().auth.uid;
-		return database.ref(`users/${uid}/todos`).push(todo).then((ref) => {
-			dispatch(addTodo({
-				id: ref.key,
-				...todo
-			}));
+		const todo = {text, dueAt};
+
+		const token = localStorage.getItem('token');
+		axios.post(
+			'http://localhost:3000/todos',
+			todo,
+			{ headers: { 'x-auth': token }}
+		).then(res => {
+			dispatch(addTodo({ id: res.data._id, ...todo }));
+		}).catch(err => {
+			console.log(err);
 		});
 	};
 };
@@ -33,10 +35,15 @@ export const removeTodo = ({ id } = {}) => ({
 });
 
 export const startRemoveTodo = ({ id } = {}) => {
-	return (dispatch, getState) => {
-		const uid = getState().auth.uid;
-		return database.ref(`users/${uid}/todos/${id}`).remove().then(() => {
+	return (dispatch) => {
+		const token = localStorage.getItem('token');
+		axios.delete(
+			'http://localhost:3000/todos/'+id,
+			{ headers: { 'x-auth': token }}
+		).then(() => {
 			dispatch(removeTodo({ id }));
+		}).catch(err => {
+			console.log(err);
 		});
 	};
 };
@@ -49,11 +56,17 @@ export const editTodo = (id, updates) => ({
 });
 
 export const startEditTodo = (id, updates) => {
-	return (dispatch, getState) => {       
-		const uid = getState().auth.uid; 
-		return database.ref(`users/${uid}/todos/${id}`).update(updates).then(() => {
-			dispatch(editTodo(id, updates));
-		});
+	return (dispatch) => {
+		const token = localStorage.getItem('token');
+		axios.patch(
+			'http://localhost:3000/todos/'+id,
+			updates,
+			{ headers: { 'x-auth': token }}
+		).then(() => {
+			dispatch(editTodo({ id, updates }));
+		}).catch(err => {
+			console.log(err);
+		});  
 	};
 };
 
@@ -65,18 +78,21 @@ export const setTodos = (todos) => ({
 
 export const startSetTodos = () => {
 	return (dispatch, getState) => {
-		const uid = getState().auth.uid;
-		return database.ref(`users/${uid}/todos`).once('value').then((snapshot) => {
-			const fetchedTodos = [];
-			snapshot.forEach((snapshotItem) => {
-				fetchedTodos.push({
-					id: snapshotItem.key,
-					...snapshotItem.val()
+		const token = localStorage.getItem('token');
+		if (getState().auth.Authenticated) {
+			console.log('Authenticated, gonna pick up some todos');
+			axios.get(
+				'http://localhost:3000/todos',
+				{ headers: { 'x-auth': token }}
+			).then(res => {
+				const fetchedTodos = [];
+				res.data.todos.forEach(item => {
+					fetchedTodos.push({ id: item._id, ...item });
 				});
+				dispatch(setTodos(fetchedTodos));
+			}).catch(err => {
+				console.log(err);
 			});
-			dispatch(setTodos(fetchedTodos));
-		}).catch((e) => {
-			console.log('Error!', e);
-		});
+		}
 	};
 };

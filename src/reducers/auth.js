@@ -4,8 +4,7 @@ export default (state = {}, action) => {
 		return {
 			...state,
 			uid: action.uid,
-			authenticated: true,
-			authError: ''
+			authenticated: true
 		};
 	case 'DE_AUTH':
 		return {

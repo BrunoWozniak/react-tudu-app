@@ -1,27 +1,27 @@
 // SET_TEXT_FILTER
-export const setTextFilter = (text = '') => ({
-    type: 'SET_TEXT_FILTER',
-    text
+export const setTextFilter = (searchText = '') => ({
+	type: 'SET_TEXT_FILTER',
+	searchText
 });
 
-// SORT_BY_DATE
-export const sortByDate = () => ({
-    type: 'SORT_BY_DATE'
+// SORT_ASCENDING
+export const sortByAscendingDate = () => ({
+	type: 'SORT_ASCENDING'
 });
 
-// SORT_BY_AMOINT
-export const sortByAmount = () => ({
-    type: 'SORT_BY_AMOUNT'
+// SORT_DESCENDING
+export const sortByDescendingDate = () => ({
+	type: 'SORT_DESCENDING'
 });
 
 // SET_START_DATE
 export const setStartDateFilter = (startDate = undefined) => ({
-    type: 'SET_START_DATE',
-    startDate
+	type: 'SET_START_DATE',
+	startDate
 });
 
 // SET_END_DATE
 export const setEndDateFilter = (endDate = undefined) => ({
-    type: 'SET_END_DATE',
-    endDate
+	type: 'SET_END_DATE',
+	endDate
 });

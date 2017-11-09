@@ -2,20 +2,19 @@ import moment from 'moment';
 
 // Get visible todos
 
-export default (todos, { text, sortBy, startDate, endDate }) => {
-	return todos.filter(({ createdAt, description, note }) => {
-		const createdAtMoment = moment(createdAt);
-		const startDateMatch = startDate ? startDate.isSameOrBefore(createdAtMoment, 'day') : true;
-		const endDateMatch = endDate ? endDate.isSameOrAfter(createdAtMoment, 'day') : true;
-		const textMatch = note.toLowerCase().includes(text.toLowerCase()) ||
-            description.toLowerCase().includes(text.toLowerCase());
+export default (todos, { searchText, sortBy, startDate, endDate }) => {
+	return todos.filter(({ dueAt, text }) => {
+		const dueAtMoment = moment(dueAt);
+		const startDateMatch = startDate ? startDate.isSameOrBefore(dueAtMoment, 'day') : true;
+		const endDateMatch = endDate ? endDate.isSameOrAfter(dueAtMoment, 'day') : true;
+		const textMatch = text.toLowerCase().includes(searchText.toLowerCase());
 
 		return startDateMatch && endDateMatch && textMatch;
 	}).sort((a, b) => {
-		if (sortBy === 'date') {
-			return a.createdAt < b.createdAt ? 1 : -1;
-		} else if (sortBy === 'amount') {
-			return a.amount < b.amount ? 1 : -1;
+		if (sortBy === 'descending') {
+			return a.dueAt < b.dueAt ? 1 : -1;
+		} else if (sortBy === 'ascending') {
+			return a.dueAt > b.dueAt ? 1 : -1;
 		}
 	});
 };
