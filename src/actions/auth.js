@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { browserHistory } from 'react-router';
 
+axios.defaults.baseURL = process.env.BACK_END_URL;
+
 export const auth = (uid) => ({
 	type: 'AUTH',
 	uid
@@ -18,11 +20,11 @@ export const authError = (error) => ({
 export const startSignup = ({ email, password }) => {
 	return (dispatch) => {
 		axios.post(
-			'http://localhost:3000/users', 
+			'/users',
 			{ email, password }
 		).then(res => {
-			dispatch(auth(res.data._id));
 			localStorage.setItem('token', res.headers['x-auth']);
+			dispatch(auth(res.data._id));
 		}).catch(() => {
 			dispatch(authError(`Sorry we can't sign you up`));
 		});
@@ -32,11 +34,11 @@ export const startSignup = ({ email, password }) => {
 export const startSignin = ({ email, password }) => {
 	return (dispatch) => {
 		axios.post(
-			'http://localhost:3000/users/login', 
+			'/users/login', 
 			{ email, password }
 		).then(res => {
-			dispatch(auth(res.data._id));
 			localStorage.setItem('token', res.headers['x-auth']);
+			dispatch(auth(res.data._id));
 		}).catch (() => {
 			dispatch(authError(`Sorry we can't sign you in`));
 		});
@@ -47,7 +49,7 @@ export const startSignout = () => {
 	return (dispatch) => {
 		const token = localStorage.getItem('token');
 		axios.delete(
-			'http://localhost:3000/users/me/token',
+			'/users/me/token',
 			{ headers: { 'x-auth': token }}
 		).then(() => {
 			localStorage.removeItem('token');

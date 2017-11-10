@@ -1,5 +1,6 @@
-import uuid from 'uuid';
 import axios from 'axios';
+
+axios.defaults.baseURL = process.env.BACK_END_URL;
 
 // ADD_TODO
 export const addTodo = (todo) => ({
@@ -17,7 +18,7 @@ export const startAddTodo = (todoData = {}) => {
 
 		const token = localStorage.getItem('token');
 		axios.post(
-			'http://localhost:3000/todos',
+			'/todos',
 			todo,
 			{ headers: { 'x-auth': token }}
 		).then(res => {
@@ -38,7 +39,7 @@ export const startRemoveTodo = ({ id } = {}) => {
 	return (dispatch) => {
 		const token = localStorage.getItem('token');
 		axios.delete(
-			'http://localhost:3000/todos/'+id,
+			'/todos/'+id,
 			{ headers: { 'x-auth': token }}
 		).then(() => {
 			dispatch(removeTodo({ id }));
@@ -59,7 +60,7 @@ export const startEditTodo = (id, updates) => {
 	return (dispatch) => {
 		const token = localStorage.getItem('token');
 		axios.patch(
-			'http://localhost:3000/todos/'+id,
+			'/todos/'+id,
 			updates,
 			{ headers: { 'x-auth': token }}
 		).then(() => {
@@ -78,12 +79,10 @@ export const setTodos = (todos) => ({
 
 export const startSetTodos = () => {
 	return (dispatch, getState) => {
-		const token = localStorage.getItem('token');
-		if (getState().auth.Authenticated) {
-			console.log('Authenticated, gonna pick up some todos');
+		if (getState().auth.authenticated) {
 			axios.get(
-				'http://localhost:3000/todos',
-				{ headers: { 'x-auth': token }}
+				'/todos',
+				{ headers: { 'x-auth': localStorage.getItem('token') }}
 			).then(res => {
 				const fetchedTodos = [];
 				res.data.todos.forEach(item => {

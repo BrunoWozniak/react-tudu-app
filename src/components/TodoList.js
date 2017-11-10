@@ -8,7 +8,7 @@ export const TodoList = (props) => (
 		<div className="list-header">
 			<div className="show-on-mobile">Todos</div>
 			<div className="show-on-desktop">Todo</div>
-			<div className="show-on-desktop">Amount</div>
+			<div className="show-on-desktop">Completed</div>
 		</div>
 		<div className="list-body">
 			{
